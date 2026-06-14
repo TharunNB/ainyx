@@ -10,6 +10,7 @@ import (
 	"user-api/internal/models"
 	"user-api/internal/repository"
 
+	"github.com/jackc/pgx/v5/pgtype"
 	"go.uber.org/zap"
 )
 
@@ -37,7 +38,7 @@ func (u *userService) CreateUser(ctx context.Context, req models.CreateUserReque
 
 	user, err := u.repo.Create(ctx, db.CreateUserParams{
 		Name: req.Name,
-		Dob:  dob,
+		Dob:  pgtype.Date{Time: dob, Valid: true},
 	})
 	if err != nil {
 		u.logger.Error("service.CreateUser: failed to persist user",
@@ -151,7 +152,7 @@ func (u *userService) UpdateUser(ctx context.Context, id int32, req models.Updat
 	user, err := u.repo.Update(ctx, db.UpdateUserParams{
 		ID:   id,
 		Name: req.Name,
-		Dob:  dob,
+		Dob:  pgtype.Date{Time: dob, Valid: true},
 	})
 	if err != nil {
 		if errors.Is(err, repository.ErrNotFound) {
@@ -194,7 +195,7 @@ func toUserResponse(u db.User) models.UserResponse {
 	return models.UserResponse{
 		ID:   u.ID,
 		Name: u.Name,
-		Dob:  u.Dob.Format(dobLayout),
+		Dob:  u.Dob.Time.Format(dobLayout),
 	}
 }
 
@@ -202,7 +203,7 @@ func toUserWithAgeResponse(u db.User) models.UserWithAgeResponse {
 	return models.UserWithAgeResponse{
 		ID:   u.ID,
 		Name: u.Name,
-		Dob:  u.Dob.Format(dobLayout),
-		Age:  CalculateAge(u.Dob, time.Now()),
+		Dob:  u.Dob.Time.Format(dobLayout),
+		Age:  CalculateAge(u.Dob.Time, time.Now()),
 	}
 }
