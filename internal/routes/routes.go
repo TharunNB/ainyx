@@ -7,12 +7,16 @@ package routes
 
 import (
 	"user-api/internal/handler"
+	"user-api/internal/middleware"
 
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
 )
 
 func Register(app *fiber.App, userHandler *handler.UserHandler, log *zap.Logger) {
+
+	app.Use(middleware.RequestID())
+	app.Use(middleware.RequestLogger(log))
 
 	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusOK).JSON(fiber.Map{

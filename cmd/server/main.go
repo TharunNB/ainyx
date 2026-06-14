@@ -44,7 +44,7 @@ func main() {
 
 	log.Info("database connection established")
 
-	if err := config.runMigrations(pool); err != nil {
+	if err := config.RunMigrations(pool); err != nil {
 		log.Fatal("failed to run database migrations", zap.Error(err))
 	}
 	log.Info("database migrations applied")

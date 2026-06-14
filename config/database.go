@@ -30,8 +30,8 @@ func ConnectDB(ctx context.Context, cfg *Config) *pgxpool.Pool {
 	return pool
 }
 
-func runMigrations(pool *pgxpool.Pool) error {
-	migrationSQL, err := os.ReadFile("db/migrations/001_create_users.sql")
+func RunMigrations(pool *pgxpool.Pool) error {
+	migrationSQL, err := os.ReadFile("db/migrations/001_init_schema.sql")
 	if err != nil {
 		return fmt.Errorf("reading migration file: %w", err)
 	}

@@ -7,7 +7,8 @@ package db
 
 import (
 	"context"
-	"time"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const countUsers = `-- name: CountUsers :one
@@ -17,7 +18,7 @@ SELECT COUNT(*) FROM users
 
 // Returns the total number of users
 func (q *Queries) CountUsers(ctx context.Context) (int64, error) {
-	row := q.db.QueryRowContext(ctx, countUsers)
+	row := q.db.QueryRow(ctx, countUsers)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
@@ -30,13 +31,13 @@ RETURNING id, name, dob
 `
 
 type CreateUserParams struct {
-	Name string    `json:"name"`
-	Dob  time.Time `json:"dob"`
+	Name string      `json:"name"`
+	Dob  pgtype.Date `json:"dob"`
 }
 
 // Creates a new user record, returns created user
 func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, createUser, arg.Name, arg.Dob)
+	row := q.db.QueryRow(ctx, createUser, arg.Name, arg.Dob)
 	var i User
 	err := row.Scan(&i.ID, &i.Name, &i.Dob)
 	return i, err
@@ -50,7 +51,7 @@ WHERE id = $1
 
 // Deletes a user by the key
 func (q *Queries) DeleteUser(ctx context.Context, id int32) error {
-	_, err := q.db.ExecContext(ctx, deleteUser, id)
+	_, err := q.db.Exec(ctx, deleteUser, id)
 	return err
 }
 
@@ -63,7 +64,7 @@ WHERE id = $1
 
 // Fetches a single user by key
 func (q *Queries) GetUserByID(ctx context.Context, id int32) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserByID, id)
+	row := q.db.QueryRow(ctx, getUserByID, id)
 	var i User
 	err := row.Scan(&i.ID, &i.Name, &i.Dob)
 	return i, err
@@ -85,7 +86,7 @@ type ListUsersParams struct {
 
 // Returns list of users ordered by ID
 func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, error) {
-	rows, err := q.db.QueryContext(ctx, listUsers, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, listUsers, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -97,9 +98,6 @@ func (q *Queries) ListUsers(ctx context.Context, arg ListUsersParams) ([]User, e
 			return nil, err
 		}
 		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
@@ -117,14 +115,14 @@ RETURNING id, name, dob
 `
 
 type UpdateUserParams struct {
-	Name string    `json:"name"`
-	Dob  time.Time `json:"dob"`
-	ID   int32     `json:"id"`
+	Name string      `json:"name"`
+	Dob  pgtype.Date `json:"dob"`
+	ID   int32       `json:"id"`
 }
 
 // Updates a user's name and dob, updated row.
 func (q *Queries) UpdateUser(ctx context.Context, arg UpdateUserParams) (User, error) {
-	row := q.db.QueryRowContext(ctx, updateUser, arg.Name, arg.Dob, arg.ID)
+	row := q.db.QueryRow(ctx, updateUser, arg.Name, arg.Dob, arg.ID)
 	var i User
 	err := row.Scan(&i.ID, &i.Name, &i.Dob)
 	return i, err

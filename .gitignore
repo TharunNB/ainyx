@@ -1,0 +1,20 @@
+# Environment secrets — never commit these
+.env
+
+# Go build output
+/bin/
+*.exe
+
+# Test coverage
+*.out
+coverage.html
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS artefacts
+.DS_Store
+Thumbs.db
