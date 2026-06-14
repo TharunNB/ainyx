@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -26,4 +28,19 @@ func ConnectDB(ctx context.Context, cfg *Config) *pgxpool.Pool {
 
 	fmt.Println("COnnection to PostgreSQL connected using pgxpool")
 	return pool
+}
+
+func runMigrations(pool *pgxpool.Pool) error {
+	migrationSQL, err := os.ReadFile("db/migrations/001_create_users.sql")
+	if err != nil {
+		return fmt.Errorf("reading migration file: %w", err)
+	}
+
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	if _, err := pool.Exec(ctx, string(migrationSQL)); err != nil {
+		return fmt.Errorf("executing migration: %w", err)
+	}
+	return nil
 }
