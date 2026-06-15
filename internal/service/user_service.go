@@ -14,7 +14,7 @@ import (
 	"go.uber.org/zap"
 )
 
-const dobLayout = "02-01-2006"
+const dobLayout = "2006-01-02"
 
 type UserService interface {
 	CreateUser(ctx context.Context, req models.CreateUserRequest) (models.UserResponse, error)
