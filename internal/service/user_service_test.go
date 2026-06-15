@@ -16,55 +16,55 @@ func TestCalculateAge(t *testing.T) {
 	}{
 		{
 			name:    "exact birthday",
-			dob:     "10-05-1990",
-			now:     "10-05-2025",
+			dob:     "1990-05-10",
+			now:     "2025-05-10",
 			wantAge: 35,
 		},
 		{
 			name:    "one day before birthday",
-			dob:     "10-05-1990",
-			now:     "09-05-2025",
+			dob:     "1990-05-10",
+			now:     "2025-05-09",
 			wantAge: 34,
 		},
 		{
 			name:    "one day after birthday",
-			dob:     "10-05-1990",
-			now:     "11-05-2025",
+			dob:     "1990-05-10",
+			now:     "2025-05-11",
 			wantAge: 35,
 		},
 		{
 			name:    "leap year dob (Feb 29) — non-leap year now (Feb 28)",
-			dob:     "29-02-2000",
-			now:     "28-02-2025",
+			dob:     "2000-02-29",
+			now:     "2025-02-28",
 			wantAge: 24,
 		},
 		{
 			name:    "leap year dob (Feb 29) — non-leap year now (Mar 01)",
-			dob:     "29-02-2000",
-			now:     "01-03-2025",
+			dob:     "2000-02-29",
+			now:     "2025-03-01",
 			wantAge: 25,
 		},
 		{
 			name:    "newborn (same day)",
-			dob:     "01-01-2025",
-			now:     "01-01-2025",
+			dob:     "2025-01-01",
+			now:     "2025-01-01",
 			wantAge: 0,
 		},
 		{
 			name:    "year boundary — December 31 dob, January 1 now",
-			dob:     "31-12-1990",
-			now:     "01-01-2025",
+			dob:     "1990-12-31",
+			now:     "2025-01-01",
 			wantAge: 34,
 		},
 		{
 			name:    "age 100",
-			dob:     "15-06-1924",
-			now:     "15-06-2024",
+			dob:     "1924-06-15",
+			now:     "2024-06-15",
 			wantAge: 100,
 		},
 	}
 
-	layout := "02-01-2006"
+	layout := "2006-01-02"
 
 	for _, tc := range tests {
 

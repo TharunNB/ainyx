@@ -9,7 +9,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-var ErrNotFound = errors.New("resouce not found")
+var ErrNotFound = errors.New("resource not found")
 
 type UserRepository interface {
 	Create(ctx context.Context, params db.CreateUserParams) (db.User, error)

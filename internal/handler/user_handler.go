@@ -51,7 +51,7 @@ func (h *UserHandler) CreateUser(c *fiber.Ctx) error {
 	user, err := h.service.CreateUser(c.Context(), req)
 	if err != nil {
 		h.logger.Error("handler.CreateUser: service error",
-			zap.String("requst_id", requestID(c)),
+			zap.String("request_id", requestID(c)),
 			zap.Error(err),
 		)
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{

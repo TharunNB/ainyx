@@ -26,7 +26,7 @@ func ConnectDB(ctx context.Context, cfg *Config) *pgxpool.Pool {
 		log.Fatalf("Database connection ping failed: %v", err)
 	}
 
-	fmt.Println("COnnection to PostgreSQL connected using pgxpool")
+	fmt.Println("Connection to PostgreSQL established using pgxpool")
 	return pool
 }
 
